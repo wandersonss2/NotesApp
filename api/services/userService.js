@@ -1,4 +1,4 @@
-const userRepository = require('../repositories/userRepository');
+const userRepository = require('../repository/userRepository');
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwt');
 
@@ -14,6 +14,14 @@ class UserService {
       throw new Error('Invalid credentials');
     }
     return this.generateToken(user);
+  }
+
+  async getProfile(userId) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
   }
 
   generateToken(user) {

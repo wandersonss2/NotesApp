@@ -1,34 +1,31 @@
 const userService = require('../services/userService');
 
-class UserController {
-  async register(req, res) {
-    try {
-      const { name, email, password } = req.body;
-      const token = await userService.register(name, email, password);
-      res.status(201).json({ token });
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
+exports.register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const token = await userService.register(name, email, password);
+    res.status(201).json({ token });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
+};
 
-  async login(req, res) {
-    try {
-      const { email, password } = req.body;
-      const token = await userService.login(email, password);
-      res.status(200).json({ token });
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const token = await userService.login(email, password);
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
+};
 
-  async getProfile(req, res) {
-    try {
-      const user = await userService.findById(req.user.id);
-      res.status(200).json(user);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; 
+    const user = await userService.getProfile(userId);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
-}
-
-module.exports = new UserController();
+};

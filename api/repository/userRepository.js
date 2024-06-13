@@ -1,16 +1,17 @@
-const User = require('../models/user');
+const User = require('../models/user'); // Assumindo que você tenha um modelo de usuário definido
 
 class UserRepository {
-  async findById(id) {
-    return User.findById(id);
+  async create(userData) {
+    const user = new User(userData);
+    return await user.save();
   }
 
   async findByEmail(email) {
-    return User.findOne({ email });
+    return await User.findOne({ email });
   }
 
-  async create(user) {
-    return User.create(user);
+  async findById(userId) {
+    return await User.findById(userId);
   }
 }
 

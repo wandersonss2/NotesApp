@@ -55,6 +55,7 @@ const defaultObj: NoteObj = {
     title: "",
     textdetails: "",
     chosecolor: "#F5F5F5",
+    
     date: (new Date().toLocaleString()).toString(),
 }
 

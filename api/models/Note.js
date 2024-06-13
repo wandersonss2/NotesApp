@@ -21,6 +21,10 @@ const NoteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  usuario_criador: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Note', NoteSchema);
