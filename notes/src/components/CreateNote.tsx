@@ -51,7 +51,7 @@ const StyledButton = styled(Button)`
 `
 
 const defaultObj: NoteObj = {
-    id: uuid(), // Gerar ID único
+    _id: uuid(), // Gerar ID único
     title: "",
     textdetails: "",
     chosecolor: "#F5F5F5",
@@ -82,7 +82,7 @@ const CreateNote: React.FC<CreateNoteP> = ({ addNote }) => {
         try {
             const createdNote = await createNote(note);
             addNote(createdNote);
-            setNote({ ...defaultObj, id: uuid() }); // Gerar novo ID para a próxima nota
+            setNote({ ...defaultObj, _id: uuid() }); // Gerar novo ID para a próxima nota
         } catch (error) {
             setError("Erro ao criar a nota");
         }

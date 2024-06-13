@@ -1,41 +1,48 @@
 import React from 'react';
-import { Box, Card, CardContent, Typography, Button, styled } from '@mui/material';
-import { NoteObj } from '../models/note';
+import { Card, CardContent, Typography, Button } from '@mui/material';
+import { styled } from '@mui/system';
+
+const NoteContainer = styled(Card)`
+  margin: 20px;
+  padding: 20px;
+  background-color: ${(props) => props.color || '#fff'};
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+`;
 
 interface NoteProps {
-    note: NoteObj,
-    delNote: (id: string) => void
+  note: {
+    _id: string;
+    title: string;
+    textdetails: string;
+    chosecolor: string;
+    date: string;
+  };
+  delNote: (id: string) => void;
+  editNote: (note: NoteProps['note']) => void;
 }
 
-const NoteCard = styled(Card)`
-    width: 400px;
-    margin: 20px;
-`
-
-const Wrapper = styled(Box)`
-    & > button {
-        border: 1px solid #000;
-        background: #fff;
-        margin-top: 10px;
-    }
-`
-
-const Note: React.FC<NoteProps> = ({ note, delNote }) => {
-    return (
-        <NoteCard style={{ backgroundColor: note.chosecolor }}>
-            <CardContent>
-                <Wrapper>
-                    <Typography>{note.title}</Typography>
-                    <Typography>{note.textdetails}</Typography>
-                    <Typography>{note.date}</Typography>
-                    <Button variant="outlined" onClick={() => {
-                        console.log(`Note ID to delete: ${note.id}`); // Log do ID da nota
-                        delNote(note.id);
-                    }}>Apagar</Button>
-                </Wrapper>
-            </CardContent>
-        </NoteCard>
-    );
-}
+const Note: React.FC<NoteProps> = ({ note, delNote, editNote }) => {
+  return (
+    <NoteContainer color={note.chosecolor}>
+      <CardContent>
+        <Typography variant="h5">{note.title}</Typography>
+        <Typography variant="body2" style={{ margin: '10px 0' }}>
+          {note.textdetails}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {note.date}
+        </Typography>
+        <Button variant="contained" color="secondary" onClick={() => delNote(note._id)} style={{ marginTop: '10px' }}>
+          Excluir
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => editNote(note)} style={{ marginTop: '10px', marginLeft: '10px' }}>
+          Atualizar
+        </Button>
+      </CardContent>
+    </NoteContainer>
+  );
+};
 
 export default Note;

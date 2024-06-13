@@ -1,5 +1,5 @@
 export interface NoteObj {
-    id: string,
+    _id: string,
     title: string,
     textdetails: string,
     chosecolor: string,
