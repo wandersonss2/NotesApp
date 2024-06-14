@@ -1,34 +1,21 @@
-const userRepository = require('../repository/userRepository');
-const jwt = require('jsonwebtoken');
-const jwtConfig = require('../config/jwt');
+const User = require('../models/user');
 
-class UserService {
-  async register(name, email, password) {
-    const user = await userRepository.create({ name, email, password });
-    return this.generateToken(user);
-  }
+const register = async (name, email, password) => {
+    const user = new User({ name, email, password });
+    await user.save();
+    const token = await user.generateAuthToken();
+    return token;
+};
 
-  async login(email, password) {
-    const user = await userRepository.findByEmail(email);
-    if (!user || !(await user.matchPassword(password))) {
-      throw new Error('Invalid credentials');
-    }
-    return this.generateToken(user);
-  }
-
-  async getProfile(userId) {
-    const user = await userRepository.findById(userId);
+const getProfile = async (userId) => {
+    const user = await User.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+        throw new Error('User not found');
     }
     return user;
-  }
+};
 
-  generateToken(user) {
-    return jwt.sign({ id: user._id, email: user.email }, jwtConfig.secret, {
-      expiresIn: jwtConfig.expiresIn,
-    });
-  }
-}
-
-module.exports = new UserService();
+module.exports = {
+    register,
+    getProfile,
+};

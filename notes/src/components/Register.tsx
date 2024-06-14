@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 
 const CustomContainer = styled(Container)`
   display: flex;
@@ -31,18 +32,35 @@ const CustomButton = styled(Button)`
   margin: 20px 0;
 `;
 
-interface RegistrationFormProps {
-  onRegister: () => void;
-}
+const ErrorText = styled(Typography)`
+  color: red;
+  margin-top: 10px;
+`;
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
+const Register: React.FC<{ onRegister: () => void }> = ({ onRegister }) => {
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const { handleRegister } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Aqui você pode adicionar a lógica de registro
-    onRegister();
-    navigate('/');
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      await handleRegister(firstName, email, password);
+      onRegister();
+      navigate('/');
+    } catch (err) {
+      setError('Failed to register');
+    }
   };
 
   const handleBackToLogin = () => {
@@ -69,6 +87,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             name="firstName"
             autoComplete="given-name"
             autoFocus
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -78,6 +98,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             label="Email"
             name="email"
             autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -88,6 +110,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             type="password"
             id="password"
             autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -98,7 +122,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             type="password"
             id="confirmPassword"
             autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          {error && <ErrorText>{error}</ErrorText>}
           <CustomButton
             type="submit"
             fullWidth
@@ -124,6 +151,4 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
   );
 };
 
-export default RegistrationForm;
-
-
+export default Register;

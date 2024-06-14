@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 
 const CustomContainer = styled(Container)`
   display: flex;
@@ -41,17 +42,22 @@ const CustomRegisterButton = styled(Button)`
   }
 `;
 
-interface LoginProps {
-  onLogin: () => void;
-}
-
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
+const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Aqui você pode adicionar a lógica de autenticação
-    onLogin();
+    try {
+      await handleLogin(email, password);
+      onLogin();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to login', error);
+      alert('Login failed. Please check your credentials and try again.');
+    }
   };
 
   const handleRegister = () => {
@@ -78,6 +84,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             name="email"
             autoComplete="email"
             autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             InputLabelProps={{ style: { color: '#fff' } }}
             InputProps={{ style: { color: '#fff' } }}
           />
@@ -90,6 +98,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             InputLabelProps={{ style: { color: '#fff' } }}
             InputProps={{ style: { color: '#fff' } }}
           />
@@ -117,5 +127,3 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 };
 
 export default Login;
-
-export {};

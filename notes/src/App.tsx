@@ -7,14 +7,17 @@ import Login from './components/Login';
 import Register from './components/Register';
 import { NoteObj } from "./models/note";
 import { getNotes, deleteNote, updateNote } from './api';
+import { AuthProvider } from './context/AuthContext';
 
 const App: React.FC = () => {
     const [notes, setNotes] = useState<NoteObj[]>([]);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchNotes();
-    }, []);
+        if (isAuthenticated) {
+            fetchNotes();
+        }
+    }, [isAuthenticated]);
 
     const fetchNotes = async () => {
         const notes = await getNotes();
@@ -57,23 +60,25 @@ const App: React.FC = () => {
     };
 
     return (
-        <Router>
-            <div>
-                <Header />
-                <Routes>
-                    <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
-                    <Route path="/register" element={<Register onRegister={() => setIsAuthenticated(true)} />} />
-                    <Route path="/" element={isAuthenticated ? (
-                        <>
-                            <CreateNote addNote={addNote} />
-                            <Notes notes={notes} delNote={delNote} updateNote={updateNoteInState} />
-                        </>
-                    ) : (
-                        <Navigate to="/login" />
-                    )} />
-                </Routes>
-            </div>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <div>
+                    <Header />
+                    <Routes>
+                        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+                        <Route path="/register" element={<Register onRegister={() => setIsAuthenticated(true)} />} />
+                        <Route path="/" element={isAuthenticated ? (
+                            <>
+                                <CreateNote addNote={addNote} />
+                                <Notes notes={notes} delNote={delNote} updateNote={updateNoteInState} />
+                            </>
+                        ) : (
+                            <Navigate to="/login" />
+                        )} />
+                    </Routes>
+                </div>
+            </Router>
+        </AuthProvider>
     );
 };
 

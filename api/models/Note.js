@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
-const NoteSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
+const noteSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -15,16 +11,23 @@ const NoteSchema = new mongoose.Schema({
   },
   chosecolor: {
     type: String,
-    required: true,
+    default: '#F5F5F5',
   },
   date: {
     type: String,
     required: true,
   },
   usuario_criador: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  nome_criador: {
     type: String,
     required: true,
   },
 });
 
-module.exports = mongoose.model('Note', NoteSchema);
+const Note = mongoose.model('Note', noteSchema);
+
+module.exports = Note;

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { InputBase, Box, Button, styled, Typography } from "@mui/material";
 import { v4 as uuid } from 'uuid';
 import { TITLELIMIT, DESCRIPTIONLIMIT } from "../constants/constant";
 import { createNote } from '../api';
 import { NoteObj } from "../models/note";
+import AuthContext from '../context/AuthContext'; // Importe o AuthContext
 
 const Container = styled(Box)`
     & > * {
@@ -55,7 +56,6 @@ const defaultObj: NoteObj = {
     title: "",
     textdetails: "",
     chosecolor: "#F5F5F5",
-    
     date: (new Date().toLocaleString()).toString(),
 }
 
@@ -66,6 +66,7 @@ interface CreateNoteP {
 const CreateNote: React.FC<CreateNoteP> = ({ addNote }) => {
     const [note, setNote] = useState<NoteObj>(defaultObj);
     const [error, setError] = useState<string>("");
+    const { token } = useContext(AuthContext); // Obtenha o token do AuthContext
 
     const onValueChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (error) {
@@ -81,10 +82,11 @@ const CreateNote: React.FC<CreateNoteP> = ({ addNote }) => {
         }
 
         try {
-            const createdNote = await createNote(note);
+            const createdNote = await createNote(note, token); // Passe o token
             addNote(createdNote);
             setNote({ ...defaultObj, _id: uuid() }); // Gerar novo ID para a próxima nota
         } catch (error) {
+            console.error('Failed to create note', error);
             setError("Erro ao criar a nota");
         }
     }
