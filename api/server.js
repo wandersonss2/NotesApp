@@ -1,17 +1,7 @@
-const express = require('express');
-const connectDB = require('./database');
-const noteRoutes = require('./routes/NoteRoutes');
-const userRoutes = require('./routes/userRoutes');
-const cors = require('cors');  
-const app = express();
-const PORT = process.env.PORT || 3000;
+require('dotenv').config(); // Carregar variáveis de ambiente do arquivo .env
+const app = require('./src/app');
+const port = process.env.PORT || 3001;
 
-connectDB();
-app.use(cors());  
-app.use(express.json());
-app.use('/api', noteRoutes);
-app.use('/api/users', userRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Servidor funcionando na porta ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });

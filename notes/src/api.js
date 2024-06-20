@@ -1,53 +1,64 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
-const API_URL = 'http://127.0.0.1:3001/api'; // Certifique-se de que a URL está correta
+const API_URL = 'http://127.0.0.1:3001/api'; // Ensure this is your correct API URL
 
-// Funções de notas
+// Create an Axios instance
+const api = axios.create({
+  baseURL: API_URL,
+  withCredentials: true // Enable sending cookies with requests
+});
+
+// Interceptor to add the token to headers of all requests
+api.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export const getNotes = async () => {
-    const response = await axios.get(`${API_URL}/notes`);
-    return response.data;
+  const response = await api.get('/notes');
+  return response.data;
 };
 
 export const getNoteById = async (id) => {
-    const response = await axios.get(`${API_URL}/notes/${id}`);
-    return response.data;
+  const response = await api.get(`/notes/${id}`);
+  return response.data;
 };
 
-export const createNote = async (note, token) => {
-    const response = await axios.post(`${API_URL}/create`, note, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    return response.data;
+export const createNote = async (note) => {
+  const response = await api.post('/create', note);
+  return response.data;
 };
 
 export const updateNote = async (id, note) => {
-    const response = await axios.put(`${API_URL}/notes/${id}`, note);
-    return response.data;
+  const response = await api.put(`/notes/${id}`, note);
+  return response.data;
 };
 
 export const deleteNote = async (id) => {
-    console.log(`API call to delete note with id: ${id}`); // Log do ID na chamada da API
-    await axios.delete(`${API_URL}/delete/${id}`); // Certifique-se de que o ID está sendo passado corretamente
+  console.log(`API call to delete note with id: ${id}`);
+  await api.delete(`/delete/${id}`);
 };
 
-// Funções de usuário
 export const registerUser = async (userData) => {
-    const response = await axios.post(`${API_URL}/users/register`, userData);
-    return response.data;
+  const response = await api.post('/users/register', userData);
+  return response.data;
 };
 
 export const loginUser = async (userData) => {
-    const response = await axios.post(`${API_URL}/users/login`, userData);
-    return response.data;
+  const response = await api.post('/users/login', userData);
+  return response.data;
 };
 
-export const getUserProfile = async (token) => {
-    const response = await axios.get(`${API_URL}/users/profile`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    return response.data;
+export const getUserProfile = async () => {
+  const response = await api.get('/users/profile');
+  return response.data;
 };
+
+export default api;
