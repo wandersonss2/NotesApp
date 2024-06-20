@@ -2,24 +2,29 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../css/AuthForm.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await axios.post('/api/users/login', { username, password });
-      const token = response.data.token;
-      if (token) {
+      const { token, userId } = response.data;
+      if (token && userId) {
         localStorage.setItem('token', token);
-        //navigate('/events'); // Redirect to a protected route
+        localStorage.setItem('userId', userId);
+        navigate('/events'); // Redirect to a protected route
       } else {
         setError('Login failed. Please check your credentials.');
       }
     } catch (error) {
+      console.error(error);
       setError('Login failed. Please check your credentials.');
     }
   };

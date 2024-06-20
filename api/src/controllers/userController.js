@@ -71,11 +71,11 @@ class UserController {
         return res.status(400).json({ message: 'Invalid credentials' });
       }
       const token = await userService.generateToken(user);
-      res.status(200).json({ message: 'Login successful', token});
+      res.status(200).json({ message: 'Login successful', token, userId: user._id });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
 }
-
-module.exports = new UserController();
+  
+  module.exports = new UserController();

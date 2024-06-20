@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  is_staff: {
+    type: Boolean,
+    required: true,
+    default: false,
+  }
 });
 
 // Hash da senha antes de salvar o usuário

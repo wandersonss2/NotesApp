@@ -1,10 +1,18 @@
 // src/components/Header.tsx
 import React from 'react';
-import { AppBar, Toolbar, Typography, Box } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { AppBar, Toolbar, Box, Button } from '@mui/material';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../css/Header.css'; // Importando o arquivo CSS
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Lógica de logout: remover o token de autenticação, etc.
+    localStorage.removeItem('token'); // Exemplo de remoção de token do localStorage
+    navigate('/login'); // Redirecionar para a página de login
+  };
+
   return (
     <AppBar position="static" className="navbar">
       <Toolbar>
@@ -17,6 +25,9 @@ const Header: React.FC = () => {
           </NavLink>
           <NavLink to="/events" className="nav-link">
             Events
+          </NavLink>
+          <NavLink to="/login" onClick={handleLogout} className="nav-link logout-button">
+            Logout
           </NavLink>
         </Box>
       </Toolbar>

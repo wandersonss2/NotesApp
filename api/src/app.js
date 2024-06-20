@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const signupRoutes = require('./routes/signupRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const userRoutes = require('./routes/userRoutes'); // Importar as rotas de usuário
 const dotenv = require('dotenv');
@@ -23,5 +24,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use(bodyParser.json());
 app.use('/api/events', eventRoutes);
 app.use('/api/users', userRoutes); // Usar as rotas de usuário
+app.use('/api/signup', signupRoutes); // Signup routes
 
 module.exports = app;
