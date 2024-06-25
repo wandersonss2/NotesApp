@@ -55,20 +55,30 @@ O backend está localizado na pasta `api` e utiliza Node.js com Express. A estru
 
 ```
 api/
+├── config/
+│   ├── jwt.js
+├── controllers/
+│   ├── NoteController.js
+│   ├── userController.js
+├── middlewares/
+│   ├── authMiddleware.js
+├── models/
+│   ├── Note.js
+│   ├── user.js
 ├── node_modules/
-├── src/
-│   ├── controllers/
-│   ├── models/
-│   ├── repositories/
-│   ├── routes/
-│   ├── services/
-│   ├── app.js
-│   ├── .env
-│   ├── middleware.js
-│   ├── server.js
+├── repository/
+│   ├── NoteRepository.js
+│   ├── userRepository.js
+├── routes/
+│   ├── NoteRoutes.js
+│   ├── userRoutes.js
+├── services/
+│   ├── userService.js
+├── .env
+├── database.js
 ├── package-lock.json
 ├── package.json
-└── README.md
+└── server.js
 ```
 
 ## Instalação
